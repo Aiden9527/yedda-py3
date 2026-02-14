@@ -30,7 +30,7 @@ class MyFrame(tk.Frame):
         self.no_sel_text = False
         # 初始的"按键-指令"映射关系
         self.press_cmd = {}
-        self.all_keys = "abcdefghijklmnopqrstuvwxyz"
+        self.all_keys = "1234567890abcdefghijklmnopqrstuvwxyz"
         self.all_tagged_strings = {}  # 存储所有标注的文本的索引，及其对应的快捷键
         # 存储解释快捷键对应含义的Entry的List
         self.entry_list = []
@@ -44,7 +44,7 @@ class MyFrame(tk.Frame):
 
         self.frame_rows = 20  # 固定行数
         self.frame_cols = 5  # 固定列数
-        self.schema = "BMES"  # 默认的标注模式
+        self.schema = "BI"  # 默认的标注模式
         self.config_file = "configs/default.config"
         self.former_cfg_file = self.config_file
         self.entity_re = r'\[\@.*?\#.*?\*\](?!\#)'  # 标注后的词语的正则表达式
@@ -126,7 +126,7 @@ class MyFrame(tk.Frame):
         # else:
         #     self.text.bind('<Control-z>', self.fallback_and_render)
         #     self.text.bind('<Control-u>', self.undo)
-        
+
         self.text.bind('<ButtonRelease-1>', self.button_release_1)
         self.set_shortcuts_layout()
 
@@ -168,7 +168,7 @@ class MyFrame(tk.Frame):
             self.save_to_history(text)
 
     def read_file(self, file_name):
-        f = open(file_name, "r")
+        f = open(file_name, "r", encoding='utf-8')
         text = f.read()
         self.file_name = file_name
         return text
@@ -373,7 +373,7 @@ class MyFrame(tk.Frame):
         """规划「快捷键」的布局"""
         if os.path.isfile(self.config_file):
             try:
-                with open(self.config_file, 'r') as fp:
+                with open(self.config_file, 'r', encoding='utf-8') as fp:
                     self.press_cmd = {k.upper(): v for k, v in json.load(fp).items()}
             except Exception:
                 self.msg_lbl.config(text='错误！！配置文件非法，必须符合json格式')
@@ -478,8 +478,8 @@ class MyFrame(tk.Frame):
         # 按照换行符进行分割，此时仍有空白行，在按段落遍历时去除
         text_paras, tagged_strings = self.history[-1]
         text_paras = text_paras.split('\n')
-        new_filename = self.file_name.split('.ann')[0] + '.anns'
-        f = open(new_filename, 'w')
+        new_filename = self.file_name.split('.')[0] + '.anns'
+        f = open(new_filename, 'w', encoding='utf-8')
         for i in range(len(text_paras)):
             p = text_paras[i]
             p = p.strip()
